@@ -1,4 +1,4 @@
-# Projet Frontend Collaboration - Nof'y
+# Projet Frontend Collaboration - [WWIP_Nof'y]
 
 Bienvenue dans le dépôt GitHub de notre projet de collaboration frontend. Ce projet est développé par l’équipe Nof'y et utilise **Angular** et **React** pour créer des interfaces web modernes et interactives.
 
