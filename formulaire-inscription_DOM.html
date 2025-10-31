@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire d'inscription</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 450px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .success-message {
+            background: #2ecc71;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .user-list {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .user-list h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .user-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .user-item strong {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 Inscription</h1>
+        
+        <form id="inscriptionForm">
+            <div class="form-group">
+                <label for="nom">Nom complet *</label>
+                <input type="text" id="nom" name="nom" placeholder="Votre nom">
+                <div class="error" id="nomError">Le nom est requis</div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" placeholder="votre@email.com">
+                <div class="error" id="emailError">Email invalide</div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Mot de passe *</label>
+                <input type="password" id="password" name="password" placeholder="Minimum 6 caractères">
+                <div class="error" id="passwordError">Minimum 6 caractères requis</div>
+            </div>
+
+            <div class="form-group">
+                <label for="age">Âge *</label>
+                <input type="number" id="age" name="age" placeholder="Votre âge">
+                <div class="error" id="ageError">Âge requis (18+)</div>
+            </div>
+
+            <div class="form-group">
+                <label for="pays">Pays *</label>
+                <select id="pays" name="pays">
+                    <option value="">Sélectionnez un pays</option>
+                    <option value="France">France</option>
+                    <option value="Madagascar">Madagascar</option>
+                    <option value="Belgique">Belgique</option>
+                    <option value="Suisse">Suisse</option>
+                    <option value="Canada">Canada</option>
+                </select>
+                <div class="error" id="paysError">Veuillez sélectionner un pays</div>
+            </div>
+
+            <button type="submit">S'inscrire</button>
+        </form>
+
+        <div class="success-message" id="successMessage">
+            ✅ Inscription réussie !
+        </div>
+
+        <div class="user-list" id="userList" style="display: none;">
+            <h2>Utilisateurs inscrits</h2>
+            <div id="userContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('inscriptionForm');
+        const successMessage = document.getElementById('successMessage');
+        const userList = document.getElementById('userList');
+        const userContainer = document.getElementById('userContainer');
+        
+        let users = [];
+
+        // Fonction de validation
+        function validateForm() {
+            let isValid = true;
+
+            // Validation du nom
+            const nom = document.getElementById('nom');
+            const nomError = document.getElementById('nomError');
+            if (nom.value.trim() === '') {
+                nomError.classList.add('show');
+                nom.style.borderColor = '#e74c3c';
+                isValid = false;
+            } else {
+                nomError.classList.remove('show');
+                nom.style.borderColor = '#2ecc71';
+            }
+
+            // Validation de l'email
+            const email = document.getElementById('email');
+            const emailError = document.getElementById('emailError');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email.value)) {
+                emailError.classList.add('show');
+                email.style.borderColor = '#e74c3c';
+                isValid = false;
+            } else {
+                emailError.classList.remove('show');
+                email.style.borderColor = '#2ecc71';
+            }
+
+            // Validation du mot de passe
+            const password = document.getElementById('password');
+            const passwordError = document.getElementById('passwordError');
+            if (password.value.length < 6) {
+                passwordError.classList.add('show');
+                password.style.borderColor = '#e74c3c';
+                isValid = false;
+            } else {
+                passwordError.classList.remove('show');
+                password.style.borderColor = '#2ecc71';
+            }
+
+            // Validation de l'âge
+            const age = document.getElementById('age');
+            const ageError = document.getElementById('ageError');
+            if (age.value === '' || parseInt(age.value) < 18) {
+                ageError.classList.add('show');
+                age.style.borderColor = '#e74c3c';
+                isValid = false;
+            } else {
+                ageError.classList.remove('show');
+                age.style.borderColor = '#2ecc71';
+            }
+
+            // Validation du pays
+            const pays = document.getElementById('pays');
+            const paysError = document.getElementById('paysError');
+            if (pays.value === '') {
+                paysError.classList.add('show');
+                pays.style.borderColor = '#e74c3c';
+                isValid = false;
+            } else {
+                paysError.classList.remove('show');
+                pays.style.borderColor = '#2ecc71';
+            }
+
+            return isValid;
+        }
+
+        // Fonction pour afficher les utilisateurs
+        function displayUsers() {
+            userContainer.innerHTML = '';
+            
+            users.forEach((user, index) => {
+                const userDiv = document.createElement('div');
+                userDiv.className = 'user-item';
+                userDiv.innerHTML = `
+                    <strong>${user.nom}</strong><br>
+                    ${user.email} | ${user.age} ans | ${user.pays}
+                `;
+                userContainer.appendChild(userDiv);
+            });
+
+            if (users.length > 0) {
+                userList.style.display = 'block';
+            }
+        }
+
+        // Soumission du formulaire
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (validateForm()) {
+                // Récupérer les données
+                const userData = {
+                    nom: document.getElementById('nom').value,
+                    email: document.getElementById('email').value,
+                    age: document.getElementById('age').value,
+                    pays: document.getElementById('pays').value
+                };
+
+                // Ajouter à la liste
+                users.push(userData);
+
+                // Afficher le message de succès
+                successMessage.classList.add('show');
+                setTimeout(() => {
+                    successMessage.classList.remove('show');
+                }, 3000);
+
+                // Afficher la liste des utilisateurs
+                displayUsers();
+
+                // Réinitialiser le formulaire
+                form.reset();
+                
+                // Réinitialiser les bordures
+                const inputs = form.querySelectorAll('input, select');
+                inputs.forEach(input => {
+                    input.style.borderColor = '#e0e0e0';
+                });
+            }
+        });
+
+        // Validation en temps réel
+        const inputs = form.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            input.addEventListener('blur', validateForm);
+        });
+    </script>
+</body>
+</html>
