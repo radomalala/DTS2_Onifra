@@ -1,0 +1,6 @@
+Principales différences entre JS et TS :
+1.	Typage des variables : const value: string, const isValid: boolean
+2.	Typage des paramètres de fonction : function showError(input: HTMLInputElement, message: string): void
+3.	Typage des éléments DOM : as HTMLFormElement, as HTMLInputElement
+4.	Interfaces : interface FormData pour structurer les données
+5.	Typage des événements : function(e: Event): void
