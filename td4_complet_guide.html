@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TD Angular TypeScript - Gestionnaire de Tâches</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .cover {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin: -40px -40px 40px -40px;
+            border-radius: 0 0 20px 20px;
+        }
+        
+        .cover h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .cover p {
+            font-size: 20px;
+            opacity: 0.9;
+        }
+        
+        .section {
+            margin: 40px 0;
+            page-break-inside: avoid;
+        }
+        
+        h2 {
+            color: #667eea;
+            font-size: 32px;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        h3 {
+            color: #764ba2;
+            font-size: 24px;
+            margin: 25px 0 15px 0;
+        }
+        
+        h4 {
+            color: #555;
+            font-size: 18px;
+            margin: 20px 0 10px 0;
+            font-weight: 600;
+        }
+        
+        .code-block {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .code-block .comment {
+            color: #5c6370;
+        }
+        
+        .code-block .keyword {
+            color: #c678dd;
+        }
+        
+        .code-block .string {
+            color: #98c379;
+        }
+        
+        .code-block .function {
+            color: #61afef;
+        }
+        
+        .command-block {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            border-left: 4px solid #00ff00;
+        }
+        
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        
+        .success-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        
+        .file-path {
+            background: #f5f5f5;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            color: #d32f2f;
+            display: inline-block;
+            margin: 5px 0;
+        }
+        
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .toc {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        
+        .toc h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .toc ul {
+            list-style: none;
+            margin-left: 0;
+        }
+        
+        .toc li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .toc a {
+            color: #333;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .toc a:hover {
+            color: #667eea;
+        }
+        
+        .emoji {
+            font-size: 1.2em;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+            
+            .section {
+                page-break-inside: avoid;
+            }
+            
+            h2 {
+                page-break-after: avoid;
+            }
+        }
+        
+        .btn-print {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        
+        .btn-print:hover {
+            background: #5568d3;
+        }
+        
+        @media print {
+            .btn-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="btn-print" onclick="window.print()">🖨️ Imprimer / Sauver en PDF</button>
+    
+    <div class="container">
+        <!-- PAGE DE COUVERTURE -->
+        <div class="cover">
+            <h1>📚 TD Angular & TypeScript</h1>
+            <p>Création d'un Mini Gestionnaire de Tâches</p>
+            <p style="margin-top: 20px; font-size: 16px;">avec Tableau de Bord Interactif</p>
+            <p style="margin-top: 40px; opacity: 0.8;">Document Complet - Code Source & Correction</p>
+        </div>
+
+        <!-- TABLE DES MATIÈRES -->
+        <div class="toc">
+            <h3>📋 Table des Matières</h3>
+            <ul>
+                <li><a href="javascript:void(0)" onclick="scrollToSection('etapes')">1. Étapes d'Installation</a></li>
+                <li><a href="javascript:void(0)" onclick="scrollToSection('structure')">2. Structure du Projet</a></li>
+                <li><a href="javascript:void(0)" onclick="scrollToSection('models')">3. Modèles de Données (Interfaces)</a></li>
+                <li><a href="javascript:void(0)" onclick="scrollToSection('service')">4. Service TaskService</a></li>
+                <li><a href="javascript:void(0)" onclick="scrollToSection('dashboard')">5. Composant Dashboard</a></li>
+                <li><a href="javascript:void(0)" onclick="scrollToSection('form')">6. Composant TaskForm</a></li>
+                <li><a href="javascript:void(0)" onclick="scrollToSection('item')">7. Composant TaskItem</a></li>
+                <li><a href="javascript:void(0)" onclick="scrollToSection('list')">8. Composant TaskList</a></li>
+                <li><a href="javascript:void(0)" onclick="scrollToSection('app')">9. Composant Principal (App)</a></li>
+                <li><a href="javascript:void(0)" onclick="scrollToSection('module')">10. Module Principal</a></li>
+                <li><a href="javascript:void(0)" onclick="scrollToSection('styles')">11. Styles Globaux</a></li>
+                <li><a href="javascript:void(0)" onclick="scrollToSection('correction')">12. Correction & Explications</a></li>
+            </ul>
+        </div>
+
+        <!-- SECTION 1: ÉTAPES -->
+        <div class="section" id="etapes">
+            <h2>1. <span class="emoji">🚀</span> Étapes d'Installation</h2>
+            
+            <h3>Prérequis</h3>
+            <div class="command-block">
+# Vérifier Node.js et npm<br>
+node --version<br>
+npm --version
+            </div>
+            
+            <div class="info-box">
+                <strong>💡 Note:</strong> Vous devez avoir Node.js version 16 ou supérieure.
+            </div>
+
+            <h3>Étape 1: Installer Angular CLI</h3>
+            <div class="command-block">
+npm install -g @angular/cli<br>
+ng version
+            </div>
+
+            <h3>Étape 2: Créer le Projet</h3>
+            <div class="command-block">
+ng new gestionnaire-taches<br>
+<br>
+# Répondre aux questions:<br>
+# ? Would you like to add Angular routing? <strong>Yes</strong><br>
+# ? Which stylesheet format would you like to use? <strong>CSS</strong><br>
+<br>
+cd gestionnaire-taches
+            </div>
+
+            <h3>Étape 3: Générer la Structure</h3>
+            <div class="command-block">
+# Générer les composants<br>
+ng generate component components/dashboard<br>
+ng generate component components/task-list<br>
+ng generate component components/task-form<br>
+ng generate component components/task-item<br>
+<br>
+# Générer le service<br>
+ng generate service services/task<br>
+<br>
+# Générer l'interface<br>
+ng generate interface models/task
+            </div>
+
+            <h3>Étape 4: Lancer l'Application</h3>
+            <div class="command-block">
+ng serve --open
+            </div>
+            
+            <div class="success-box">
+                <strong>✅ L'application sera accessible sur:</strong> http://localhost:4200
+            </div>
+        </div>
+
+        <!-- SECTION 2: STRUCTURE -->
+        <div class="section" id="structure">
+            <h2>2. <span class="emoji">📁</span> Structure du Projet</h2>
+            
+            <div class="code-block">
+gestionnaire-taches/<br>
+├── src/<br>
+│   ├── app/<br>
+│   │   ├── components/<br>
+│   │   │   ├── dashboard/<br>
+│   │   │   │   ├── dashboard.component.ts<br>
+│   │   │   │   ├── dashboard.component.html<br>
+│   │   │   │   └── dashboard.component.css<br>
+│   │   │   ├── task-list/<br>
+│   │   │   ├── task-form/<br>
+│   │   │   └── task-item/<br>
+│   │   ├── models/<br>
+│   │   │   └── task.ts<br>
+│   │   ├── services/<br>
+│   │   │   └── task.service.ts<br>
+│   │   ├── app.component.ts<br>
+│   │   ├── app.component.html<br>
+│   │   ├── app.component.css<br>
+│   │   └── app.module.ts<br>
+│   ├── styles.css<br>
+│   └── index.html<br>
+├── angular.json<br>
+├── package.json<br>
+└── tsconfig.json
+            </div>
+        </div>
+
+        <!-- SECTION 3: MODELS -->
+        <div class="section" id="models">
+            <h2>3. <span class="emoji">📝</span> Modèles de Données</h2>
+            
+            <h3>Fichier: <span class="file-path">src/app/models/task.ts</span></h3>
+            
+            <div class="code-block">
+<span class="keyword">export interface</span> <span class="function">Task</span> {<br>
+&nbsp;&nbsp;id: <span class="keyword">number</span>;<br>
+&nbsp;&nbsp;title: <span class="keyword">string</span>;<br>
+&nbsp;&nbsp;description: <span class="keyword">string</span>;<br>
+&nbsp;&nbsp;status: <span class="string">'todo'</span> | <span class="string">'in-progress'</span> | <span class="string">'done'</span>;<br>
+&nbsp;&nbsp;priority: <span class="string">'low'</span> | <span class="string">'medium'</span> | <span class="string">'high'</span>;<br>
+&nbsp;&nbsp;createdAt: <span class="keyword">Date</span>;<br>
+&nbsp;&nbsp;dueDate?: <span class="keyword">Date</span>;<br>
+}<br>
+<br>
+<span class="keyword">export interface</span> <span class="function">TaskStats</span> {<br>
+&nbsp;&nbsp;total: <span class="keyword">number</span>;<br>
+&nbsp;&nbsp;todo: <span class="keyword">number</span>;<br>
+&nbsp;&nbsp;inProgress: <span class="keyword">number</span>;<br>
+&nbsp;&nbsp;done: <span class="keyword">number</span>;<br>
+}
+            </div>
+            
+            <div class="info-box">
+                <strong>💡 Explications:</strong>
+                <ul>
+                    <li><strong>Task:</strong> Interface définissant la structure d'une tâche</li>
+                    <li><strong>status:</strong> Type union limitant les valeurs possibles</li>
+                    <li><strong>dueDate?:</strong> Propriété optionnelle (peut être undefined)</li>
+                    <li><strong>TaskStats:</strong> Interface pour les statistiques du tableau de bord</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- SECTION 4: SERVICE -->
+        <div class="section" id="service">
+            <h2>4. <span class="emoji">⚙️</span> Service TaskService</h2>
+            
+            <h3>Fichier: <span class="file-path">src/app/services/task.service.ts</span></h3>
+            
+            <div class="code-block">
+<span class="keyword">import</span> { Injectable } <span class="keyword">from</span> <span class="string">'@angular/core'</span>;<br>
+<span class="keyword">import</span> { BehaviorSubject, Observable } <span class="keyword">from</span> <span class="string">'rxjs'</span>;<br>
+<span class="keyword">import</span> { Task, TaskStats } <span class="keyword">from</span> <span class="string">'../models/task'</span>;<br>
+<br>
+<span class="keyword">@Injectable</span>({<br>
+&nbsp;&nbsp;providedIn: <span class="string">'root'</span><br>
+})<br>
+<span class="keyword">export class</span> <span class="function">TaskService</span> {<br>
+&nbsp;&nbsp;<span class="keyword">private</span> tasks: Task[] = [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;id: <span class="string">1</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title: <span class="string">'Terminer le TD Angular'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;description: <span class="string">'Compléter tous les exercices du TD'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;status: <span class="string">'in-progress'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;priority: <span class="string">'high'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;createdAt: <span class="keyword">new</span> <span class="function">Date</span>(<span class="string">'2024-11-01'</span>),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dueDate: <span class="keyword">new</span> <span class="function">Date</span>(<span class="string">'2024-11-10'</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;id: <span class="string">2</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title: <span class="string">'Réviser TypeScript'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;description: <span class="string">'Revoir les concepts avancés'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;status: <span class="string">'todo'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;priority: <span class="string">'medium'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;createdAt: <span class="keyword">new</span> <span class="function">Date</span>(<span class="string">'2024-11-02'</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;id: <span class="string">3</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title: <span class="string">'Préparer présentation'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;description: <span class="string">'Créer les slides pour le cours'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;status: <span class="string">'done'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;priority: <span class="string">'high'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;createdAt: <span class="keyword">new</span> <span class="function">Date</span>(<span class="string">'2024-10-28'</span>),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dueDate: <span class="keyword">new</span> <span class="function">Date</span>(<span class="string">'2024-11-05'</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;];<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">private</span> tasksSubject = <span class="keyword">new</span> <span class="function">BehaviorSubject</span>&lt;Task[]&gt;(<span class="keyword">this</span>.tasks);<br>
+&nbsp;&nbsp;<span class="keyword">public</span> tasks$ = <span class="keyword">this</span>.tasksSubject.<span class="function">asObservable</span>();<br>
+<br>
+&nbsp;&nbsp;<span class="function">constructor</span>() { }<br>
+<br>
+&nbsp;&nbsp;<span class="function">getTasks</span>(): Observable&lt;Task[]&gt; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="keyword">this</span>.tasks$;<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;<span class="function">getTaskById</span>(id: <span class="keyword">number</span>): Task | <span class="keyword">undefined</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="keyword">this</span>.tasks.<span class="function">find</span>(task => task.id === id);<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;<span class="function">addTask</span>(task: Omit&lt;Task, <span class="string">'id'</span> | <span class="string">'createdAt'</span>&gt;): <span class="keyword">void</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> newTask: Task = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...task,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;id: <span class="keyword">this</span>.<span class="function">generateId</span>(),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;createdAt: <span class="keyword">new</span> <span class="function">Date</span>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;};<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.tasks.<span class="function">push</span>(newTask);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.tasksSubject.<span class="function">next</span>(<span class="keyword">this</span>.tasks);<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;<span class="function">updateTask</span>(id: <span class="keyword">number</span>, updatedTask: Partial&lt;Task&gt;): <span class="keyword">void</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> index = <span class="keyword">this</span>.tasks.<span class="function">findIndex</span>(task => task.id === id);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (index !== <span class="string">-1</span>) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.tasks[index] = { ...<span class="keyword">this</span>.tasks[index], ...updatedTask };<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.tasksSubject.<span class="function">next</span>(<span class="keyword">this</span>.tasks);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;<span class="function">deleteTask</span>(id: <span class="keyword">number</span>): <span class="keyword">void</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.tasks = <span class="keyword">this</span>.tasks.<span class="function">filter</span>(task => task.id !== id);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.tasksSubject.<span class="function">next</span>(<span class="keyword">this</span>.tasks);<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;<span class="function">getStats</span>(): TaskStats {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;total: <span class="keyword">this</span>.tasks.length,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;todo: <span class="keyword">this</span>.tasks.<span class="function">filter</span>(t => t.status === <span class="string">'todo'</span>).length,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inProgress: <span class="keyword">this</span>.tasks.<span class="function">filter</span>(t => t.status === <span class="string">'in-progress'</span>).length,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;done: <span class="keyword">this</span>.tasks.<span class="function">filter</span>(t => t.status === <span class="string">'done'</span>).length<br>
+&nbsp;&nbsp;&nbsp;&nbsp;};<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;<span class="keyword">private</span> <span class="function">generateId</span>(): <span class="keyword">number</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="keyword">this</span>.tasks.length > <span class="string">0</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;? Math.<span class="function">max</span>(...<span class="keyword">this</span>.tasks.<span class="function">map</span>(t => t.id)) + <span class="string">1</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="string">1</span>;<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+            
+            <div class="info-box">
+                <strong>💡 Points Clés:</strong>
+                <ul>
+                    <li><strong>BehaviorSubject:</strong> Garde la dernière valeur et émet immédiatement aux nouveaux abonnés</li>
+                    <li><strong>Observable:</strong> Permet aux composants de s'abonner aux changements</li>
+                    <li><strong>Omit & Partial:</strong> Types utilitaires TypeScript pour manipuler les interfaces</li>
+                    <li><strong>providedIn: 'root':</strong> Rend le service disponible globalement (Singleton)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- SECTION 5: DASHBOARD -->
+        <div class="section" id="dashboard">
+            <h2>5. <span class="emoji">📊</span> Composant Dashboard</h2>
+            
+            <h3>TypeScript: <span class="file-path">dashboard.component.ts</span></h3>
+            <div class="code-block">
+<span class="keyword">import</span> { Component, OnInit } <span class="keyword">from</span> <span class="string">'@angular/core'</span>;<br>
+<span class="keyword">import</span> { TaskService } <span class="keyword">from</span> <span class="string">'../../services/task.service'</span>;<br>
+<span class="keyword">import</span> { TaskStats } <span class="keyword">from</span> <span class="string">'../../models/task'</span>;<br>
+<br>
+<span class="keyword">@Component</span>({<br>
+&nbsp;&nbsp;selector: <span class="string">'app-dashboard'</span>,<br>
+&nbsp;&nbsp;templateUrl: <span class="string">'./dashboard.component.html'</span>,<br>
+&nbsp;&nbsp;styleUrls: [<span class="string">'./dashboard.component.css'</span>]<br>
+})<br>
+<span class="keyword">export class</span> <span class="function">DashboardComponent</span> <span class="keyword">implements</span> OnInit {<br>
+&nbsp;&nbsp;stats: TaskStats = { total: <span class="string">0</span>, todo: <span class="string">0</span>, inProgress: <span class="string">0</span>, done: <span class="string">0</span> };<br>
+<br>
+&nbsp;&nbsp;<span class="function">constructor</span>(<span class="keyword">private</span> taskService: TaskService) { }<br>
+<br>
+&nbsp;&nbsp;<span class="function">ngOnInit</span>(): <span class="keyword">void</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.taskService.<span class="function">getTasks</span>().<span class="function">subscribe</span>(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.stats = <span class="keyword">this</span>.taskService.<span class="function">getStats</span>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;<span class="function">getCompletionPercentage</span>(): <span class="keyword">number</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="keyword">this</span>.stats.total > <span class="string">0</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;? Math.<span class="function">round</span>((<span class="keyword">this</span>.stats.done / <span class="keyword">this</span>.stats.total) * <span class="string">100</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="string">0</span>;<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+
+            <h3>HTML: <span class="file-path">dashboard.component.html</span></h3>
+            <div class="code-block">
+&lt;div class=<span class="string">"dashboard"</span>&gt;<br>
+&nbsp;&nbsp;&lt;h2&gt;📊 Tableau de Bord&lt;/h2&gt;<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&lt;div class=<span class="string">"stats-grid"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=<span class="string">"stat-card total"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=<span class="string">"stat-icon"</span>&gt;📝&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=<span class="string">"stat-content"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h3&gt;Total&lt;/h3&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p class=<span class="string">"stat-number"</span>&gt;{{ stats.total }}&lt;/p&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=<span class="string">"stat-card todo"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=<span class="string">"stat-icon"</span>&gt;⏳&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=<span class="string">"stat-content"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h3&gt;À faire&lt;/h3&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p class=<span class="string">"stat-number"</span>&gt;{{ stats.todo }}&lt;/p&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=<span class="string">"stat-card in-progress"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=<span class="string">"stat-icon"</span>&gt;🔄&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=<span class="string">"stat-content"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h3&gt;En cours&lt;/h3&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p class=<span class="string">"stat-number"</span>&gt;{{ stats.inProgress }}&lt;/p&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=<span class="string">"stat-card done"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=<span class="string">"stat-icon"</span>&gt;✅&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=<span class="string">"stat-content"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h3&gt;Terminées&lt;/h3&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p class=<span class="string">"stat-number"</span>&gt;{{ stats.done }}&lt;/p&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&lt;/div&gt;<br>
+<br>
+&nbsp;&nbsp;&lt;div class=<span class="string">"progress-section"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;h3&gt;Progression globale&lt;/h3&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=<span class="string">"progress-bar"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=<span class="string">"progress-fill"</span> [style.width.%]=<span class="string">"getCompletionPercentage()"</span>&gt;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;p class=<span class="string">"progress-text"</span>&gt;{{ getCompletionPercentage() }}% complété&lt;/p&gt;<br>
+&nbsp;&nbsp;&lt;/div&gt;<br>
+&lt;/div&gt;
+            </div>
+
+            <h3>CSS: <span class="file-path">dashboard.component.css</span></h3>
+            <div class="code-block">
+<span class="comment">/* Styles complets dans le document original */</span><br>
+.dashboard { padding: 20px; }<br>
+.stats-grid {<br>
+&nbsp;&nbsp;display: grid;<br>
+&nbsp;&nbsp;grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));<br>
+&nbsp;&nbsp;gap: 20px;<br>
+}<br>
+.stat-card {<br>
+&nbsp;&nbsp;background: white;<br>
+&nbsp;&nbsp;border-radius: 12px;<br>
+&nbsp;&nbsp;padding: 25px;<br>
+&nbsp;&nbsp;box-shadow: 0 2px 8px rgba(0,0,0,0.1);<br>
+}
+            </div>
+        </div>
+
+        <!-- SECTION 6: FORM -->
+        <div class="section" id="form">
+            <h2>6. <span class="emoji">➕</span> Composant TaskForm</h2>
+            
+            <h3>TypeScript: <span class="file-path">task-form.component.ts</span></h3>
+            <div class="code-block">
+<span class="keyword">import</span> { Component } <span class="keyword">from</span> <span class="string">'@angular/core'</span>;<br>
+<span class="keyword">import</span> { TaskService } <span class="keyword">from</span> <span class="string">'../../services/task.service'</span>;<br>
+<br>
+<span class="keyword">@Component</span>({<br>
+&nbsp;&nbsp;selector: <span class="string">'app-task-form'</span>,<br>
+&nbsp;&nbsp;templateUrl: <span class="string">'./task-form.component.html'</span>,<br>
+&nbsp;&nbsp;styleUrls: [<span class="string">'./task-form.component.css'</span>]<br>
+})<br>
+<span class="keyword">export class</span> <span class="function">TaskFormComponent</span> {<br>
+&nbsp;&nbsp;task = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;title: <span class="string">''</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description: <span class="string">''</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;status: <span class="string">'todo'</span> <span class="keyword">as</span> <span class="string">'todo'</span> | <span class="string">'in-progress'</span> | <span class="string">'done'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;priority: <span class="string">'medium'</span> <span class="keyword">as</span> <span class="string">'low'</span> | <span class="string">'medium'</span> | <span class="string">'high'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dueDate: <span class="keyword">undefined</span> <span class="keyword">as</span> Date | <span class="keyword">undefined</span><br>
+&nbsp;&nbsp;};<br>
+<br>
+&nbsp;&nbsp;<span class="function">constructor</span>(<span class="keyword">private</span> taskService: TaskService) { }<br>
+<br>
+&nbsp;&nbsp;<span class="function">onSubmit</span>(): <span class="keyword">void</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="keyword">this</span>.task.title.<span class="function">trim</span>()) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.taskService.<span class="function">addTask</span>(<span class="keyword">this</span>.task);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.<span class="function">resetForm</span>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;<span class="function">resetForm</span>(): <span class="keyword">void</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.task = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title: <span class="string">''</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;description: <span class="string">''</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;status: <span class="string">'todo'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;priority: <span class="string">'medium'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dueDate: <span class="keyword">undefined</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;};<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+
+            <h3>HTML: <span class="file-path">task-form.component.html</span></h3>
+            <div class="code-block">
+&lt;div class=<span class="string">"task-form-container"</span>&gt;<br>
+&nbsp;&nbsp;&lt;h3&gt;➕ Ajouter une tâche&lt;/h3&gt;<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&lt;form (ngSubmit)=<span class="string">"onSubmit()"</span> #taskForm=<span class="string">"ngForm"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=<span class="string">"form-group"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label for=<span class="string">"title"</span>&gt;Titre *&lt;/label&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type=<span class="string">"text"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;id=<span class="string">"title"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name=<span class="string">"title"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[(ngModel)]=<span class="string">"task.title"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;placeholder=<span class="string">"Ex: Faire les courses"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=<span class="string">"form-group"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label for=<span class="string">"description"</span>&gt;Description&lt;/label&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;textarea<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;id=<span class="string">"description"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name=<span class="string">"description"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[(ngModel)]=<span class="string">"task.description"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rows=<span class="string">"3"</span>&gt;&lt;/textarea&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=<span class="string">"form-row"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=<span class="string">"form-group"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label for=<span class="string">"status"</span>&gt;Statut&lt;/label&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;select id=<span class="string">"status"</span> name=<span class="string">"status"</span> [(ngModel)]=<span class="string">"task.status"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;option value=<span class="string">"todo"</span>&gt;À faire&lt;/option&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;option value=<span class="string">"in-progress"</span>&gt;En cours&lt;/option&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;option value=<span class="string">"done"</span>&gt;Terminée&lt;/option&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/select&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=<span class="string">"form-group"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label for=<span class="string">"priority"</span>&gt;Priorité&lt;/label&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;select id=<span class="string">"priority"</span> name=<span class="string">"priority"</span> [(ngModel)]=<span class="string">"task.priority"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;option value=<span class="string">"low"</span>&gt;Basse&lt;/option&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;option value=<span class="string">"medium"</span>&gt;Moyenne&lt;/option&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;option value=<span class="string">"high"</span>&gt;Haute&lt;/option&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/select&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=<span class="string">"form-actions"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button type=<span class="string">"submit"</span> class=<span class="string">"btn btn-primary"</span> [disabled]=<span class="string">"!taskForm.valid"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ajouter<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/button&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button type=<span class="string">"button"</span> class=<span class="string">"btn btn-secondary"</span> (click)=<span class="string">"resetForm()"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Annuler<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/button&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&lt;/form&gt;<br>
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- SECTION 7: TASK ITEM -->
+        <div class="section" id="item">
+            <h2>7. <span class="emoji">📌</span> Composant TaskItem</h2>
+            
+            <h3>TypeScript: <span class="file-path">task-item.component.ts</span></h3>
+            <div class="code-block">
+<span class="keyword">import</span> { Component, Input, Output, EventEmitter } <span class="keyword">from</span> <span class="string">'@angular/core'</span>;<br>
+<span class="keyword">import</span> { Task } <span class="keyword">from</span> <span class="string">'../../models/task'</span>;<br>
+<br>
+<span class="keyword">@Component</span>({<br>
+&nbsp;&nbsp;selector: <span class="string">'app-task-item'</span>,<br>
+&nbsp;&nbsp;templateUrl: <span class="string">'./task-item.component.html'</span>,<br>
+&nbsp;&nbsp;styleUrls: [<span class="string">'./task-item.component.css'</span>]<br>
+})<br>
+<span class="keyword">export class</span> <span class="function">TaskItemComponent</span> {<br>
+&nbsp;&nbsp;<span class="keyword">@Input()</span> task!: Task;<br>
+&nbsp;&nbsp;<span class="keyword">@Output()</span> statusChange = <span class="keyword">new</span> <span class="function">EventEmitter</span>&lt;{ id: number, status: Task[<span class="string">'status'</span>] }&gt;();<br>
+&nbsp;&nbsp;<span class="keyword">@Output()</span> delete = <span class="keyword">new</span> <span class="function">EventEmitter</span>&lt;number&gt;();<br>
+<br>
+&nbsp;&nbsp;<span class="function">getStatusLabel</span>(status: <span class="keyword">string</span>): <span class="keyword">string</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> labels: <span class="keyword">any</span> = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">'todo'</span>: <span class="string">'À faire'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">'in-progress'</span>: <span class="string">'En cours'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">'done'</span>: <span class="string">'Terminée'</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;};<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> labels[status] || status;<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;<span class="function">getPriorityLabel</span>(priority: <span class="keyword">string</span>): <span class="keyword">string</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> labels: <span class="keyword">any</span> = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">'low'</span>: <span class="string">'Basse'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">'medium'</span>: <span class="string">'Moyenne'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">'high'</span>: <span class="string">'Haute'</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;};<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> labels[priority] || priority;<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;<span class="function">onStatusChange</span>(newStatus: Task[<span class="string">'status'</span>]): <span class="keyword">void</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.statusChange.<span class="function">emit</span>({ id: <span class="keyword">this</span>.task.id, status: newStatus });<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;<span class="function">onDelete</span>(): <span class="keyword">void</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="function">confirm</span>(<span class="string">'Êtes-vous sûr de vouloir supprimer cette tâche ?'</span>)) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.delete.<span class="function">emit</span>(<span class="keyword">this</span>.task.id);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+
+            <div class="info-box">
+                <strong>💡 Communication Parent-Enfant:</strong>
+                <ul>
+                    <li><strong>@Input():</strong> Reçoit les données du parent (TaskList)</li>
+                    <li><strong>@Output():</strong> Émet des événements vers le parent</li>
+                    <li><strong>EventEmitter:</strong> Permet d'envoyer des données personnalisées</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- SECTION 8: TASK LIST -->
+        <div class="section" id="list">
+            <h2>8. <span class="emoji">📝</span> Composant TaskList</h2>
+            
+            <h3>TypeScript: <span class="file-path">task-list.component.ts</span></h3>
+            <div class="code-block">
+<span class="keyword">import</span> { Component, OnInit } <span class="keyword">from</span> <span class="string">'@angular/core'</span>;<br>
+<span class="keyword">import</span> { TaskService } <span class="keyword">from</span> <span class="string">'../../services/task.service'</span>;<br>
+<span class="keyword">import</span> { Task } <span class="keyword">from</span> <span class="string">'../../models/task'</span>;<br>
+<br>
+<span class="keyword">@Component</span>({<br>
+&nbsp;&nbsp;selector: <span class="string">'app-task-list'</span>,<br>
+&nbsp;&nbsp;templateUrl: <span class="string">'./task-list.component.html'</span>,<br>
+&nbsp;&nbsp;styleUrls: [<span class="string">'./task-list.component.css'</span>]<br>
+})<br>
+<span class="keyword">export class</span> <span class="function">TaskListComponent</span> <span class="keyword">implements</span> OnInit {<br>
+&nbsp;&nbsp;tasks: Task[] = [];<br>
+&nbsp;&nbsp;filteredTasks: Task[] = [];<br>
+&nbsp;&nbsp;filterStatus: <span class="keyword">string</span> = <span class="string">'all'</span>;<br>
+<br>
+&nbsp;&nbsp;<span class="function">constructor</span>(<span class="keyword">private</span> taskService: TaskService) { }<br>
+<br>
+&nbsp;&nbsp;<span class="function">ngOnInit</span>(): <span class="keyword">void</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.taskService.<span class="function">getTasks</span>().<span class="function">subscribe</span>(tasks => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.tasks = tasks;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.<span class="function">applyFilter</span>();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;<span class="function">applyFilter</span>(): <span class="keyword">void</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="keyword">this</span>.filterStatus === <span class="string">'all'</span>) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.filteredTasks = <span class="keyword">this</span>.tasks;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;} <span class="keyword">else</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.filteredTasks = <span class="keyword">this</span>.tasks.<span class="function">filter</span>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;task => task.status === <span class="keyword">this</span>.filterStatus<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;<span class="function">onFilterChange</span>(status: <span class="keyword">string</span>): <span class="keyword">void</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.filterStatus = status;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.<span class="function">applyFilter</span>();<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;<span class="function">onStatusChange</span>(event: { id: number, status: Task[<span class="string">'status'</span>] }): <span class="keyword">void</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.taskService.<span class="function">updateTask</span>(event.id, { status: event.status });<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;<span class="function">onDelete</span>(id: <span class="keyword">number</span>): <span class="keyword">void</span> {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">this</span>.taskService.<span class="function">deleteTask</span>(id);<br>
+&nbsp;&nbsp;}<br>
+}
+            </div>
+        </div>
+
+        <!-- SECTION 9: APP COMPONENT -->
+        <div class="section" id="app">
+            <h2>9. <span class="emoji">🏠</span> Composant Principal</h2>
+            
+            <h3>TypeScript: <span class="file-path">app.component.ts</span></h3>
+            <div class="code-block">
+<span class="keyword">import</span> { Component } <span class="keyword">from</span> <span class="string">'@angular/core'</span>;<br>
+<br>
+<span class="keyword">@Component</span>({<br>
+&nbsp;&nbsp;selector: <span class="string">'app-root'</span>,<br>
+&nbsp;&nbsp;templateUrl: <span class="string">'./app.component.html'</span>,<br>
+&nbsp;&nbsp;styleUrls: [<span class="string">'./app.component.css'</span>]<br>
+})<br>
+<span class="keyword">export class</span> <span class="function">AppComponent</span> {<br>
+&nbsp;&nbsp;title = <span class="string">'Gestionnaire de Tâches'</span>;<br>
+}
+            </div>
+
+            <h3>HTML: <span class="file-path">app.component.html</span></h3>
+            <div class="code-block">
+&lt;div class=<span class="string">"app-container"</span>&gt;<br>
+&nbsp;&nbsp;&lt;header class=<span class="string">"app-header"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;✨ {{ title }}&lt;/h1&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;Gérez vos tâches efficacement&lt;/p&gt;<br>
+&nbsp;&nbsp;&lt;/header&gt;<br>
+<br>
+&nbsp;&nbsp;&lt;main class=<span class="string">"app-main"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;app-dashboard&gt;&lt;/app-dashboard&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;app-task-form&gt;&lt;/app-task-form&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;app-task-list&gt;&lt;/app-task-list&gt;<br>
+&nbsp;&nbsp;&lt;/main&gt;<br>
+<br>
+&nbsp;&nbsp;&lt;footer class=<span class="string">"app-footer"</span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;© 2024 Gestionnaire de Tâches - TD Angular &amp; TypeScript&lt;/p&gt;<br>
+&nbsp;&nbsp;&lt;/footer&gt;<br>
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <!-- SECTION 10: MODULE -->
+        <div class="section" id="module">
+            <h2>10. <span class="emoji">🔧</span> Module Principal</h2>
+            
+            <h3>Fichier: <span class="file-path">app.module.ts</span></h3>
+            <div class="code-block">
+<span class="keyword">import</span> { NgModule } <span class="keyword">from</span> <span class="string">'@angular/core'</span>;<br>
+<span class="keyword">import</span> { BrowserModule } <span class="keyword">from</span> <span class="string">'@angular/platform-browser'</span>;<br>
+<span class="keyword">import</span> { FormsModule } <span class="keyword">from</span> <span class="string">'@angular/forms'</span>;<br>
+<br>
+<span class="keyword">import</span> { AppRoutingModule } <span class="keyword">from</span> <span class="string">'./app-routing.module'</span>;<br>
+<span class="keyword">import</span> { AppComponent } <span class="keyword">from</span> <span class="string">'./app.component'</span>;<br>
+<span class="keyword">import</span> { DashboardComponent } <span class="keyword">from</span> <span class="string">'./components/dashboard/dashboard.component'</span>;<br>
+<span class="keyword">import</span> { TaskListComponent } <span class="keyword">from</span> <span class="string">'./components/task-list/task-list.component'</span>;<br>
+<span class="keyword">import</span> { TaskFormComponent } <span class="keyword">from</span> <span class="string">'./components/task-form/task-form.component'</span>;<br>
+<span class="keyword">import</span> { TaskItemComponent } <span class="keyword">from</span> <span class="string">'./components/task-item/task-item.component'</span>;<br>
+<br>
+<span class="keyword">@NgModule</span>({<br>
+&nbsp;&nbsp;declarations: [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;AppComponent,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;DashboardComponent,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;TaskListComponent,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;TaskFormComponent,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;TaskItemComponent<br>
+&nbsp;&nbsp;],<br>
+&nbsp;&nbsp;imports: [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;BrowserModule,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;AppRoutingModule,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;FormsModule <span class="comment">// IMPORTANT pour ngModel</span><br>
+&nbsp;&nbsp;],<br>
+&nbsp;&nbsp;providers: [],<br>
+&nbsp;&nbsp;bootstrap: [AppComponent]<br>
+})<br>
+<span class="keyword">export class</span> <span class="function">AppModule</span> { }<br>
