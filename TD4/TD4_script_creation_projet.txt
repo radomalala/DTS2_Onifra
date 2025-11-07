@@ -1,0 +1,61 @@
+# Script PowerShell pour créer automatiquement le projet
+# À exécuter dans PowerShell sous Windows
+
+Write-Host "🚀 Création du Gestionnaire de Tâches Angular" -ForegroundColor Cyan
+Write-Host "=============================================" -ForegroundColor Cyan
+Write-Host ""
+
+# Vérifier Node.js
+Write-Host "📦 Vérification de Node.js..." -ForegroundColor Yellow
+try {
+    $nodeVersion = node --version
+    Write-Host "✅ Node.js installé: $nodeVersion" -ForegroundColor Green
+} catch {
+    Write-Host "❌ Node.js n'est pas installé!" -ForegroundColor Red
+    Write-Host "Téléchargez-le sur: https://nodejs.org/" -ForegroundColor Yellow
+    exit
+}
+
+# Vérifier Angular CLI
+Write-Host "📦 Vérification d'Angular CLI..." -ForegroundColor Yellow
+try {
+    $ngVersion = ng version 2>&1 | Select-String "Angular CLI"
+    Write-Host "✅ Angular CLI installé" -ForegroundColor Green
+} catch {
+    Write-Host "⚙️ Installation d'Angular CLI..." -ForegroundColor Yellow
+    npm install -g @angular/cli
+}
+
+# Créer le projet
+Write-Host ""
+Write-Host "🏗️ Création du projet Angular..." -ForegroundColor Yellow
+ng new gestionnaire-taches --routing=true --style=css --skip-git=true
+
+# Naviguer dans le projet
+Set-Location gestionnaire-taches
+
+# Générer les composants
+Write-Host ""
+Write-Host "🎨 Génération des composants..." -ForegroundColor Yellow
+ng generate component components/dashboard --skip-tests=true
+ng generate component components/task-list --skip-tests=true
+ng generate component components/task-form --skip-tests=true
+ng generate component components/task-item --skip-tests=true
+
+# Générer le service
+Write-Host "⚙️ Génération du service..." -ForegroundColor Yellow
+ng generate service services/task --skip-tests=true
+
+# Générer l'interface
+Write-Host "📝 Génération de l'interface..." -ForegroundColor Yellow
+ng generate interface models/task
+
+Write-Host ""
+Write-Host "✅ Structure du projet créée avec succès!" -ForegroundColor Green
+Write-Host ""
+Write-Host "📋 Prochaines étapes:" -ForegroundColor Cyan
+Write-Host "1. Copiez les fichiers de code fournis dans le TD" -ForegroundColor White
+Write-Host "2. Exécutez: ng serve --open" -ForegroundColor White
+Write-Host "3. Ouvrez votre navigateur sur http://localhost:4200" -ForegroundColor White
+Write-Host ""
+Write-Host "🎉 Bon développement!" -ForegroundColor Green
