@@ -1,0 +1,269 @@
+# 📘 Guide d'Installation du Gestionnaire de Tâches
+
+## 🎯 Objectifs du TD
+- Créer une application Angular complète
+- Utiliser TypeScript et les services
+- Gérer l'état avec RxJS (Observables)
+- Créer des composants réutilisables
+- Implémenter la liaison de données bidirectionnelle
+
+## 🔧 Prérequis
+
+### Vérifier les installations
+```bash
+node --version    # Doit afficher v16+ ou v18+
+npm --version     # Doit afficher 8+ ou 9+
+```
+
+### Installer Node.js (si nécessaire)
+Télécharger depuis: https://nodejs.org/
+
+## 📝 Instructions Pas à Pas
+
+### 1. Installation d'Angular CLI
+```bash
+npm install -g @angular/cli@latest
+ng version
+```
+
+### 2. Création du Projet
+```bash
+ng new gestionnaire-taches
+# Routing: Yes
+# Stylesheet: CSS
+cd gestionnaire-taches
+```
+
+### 3. Génération des Composants
+```bash
+ng generate component components/dashboard
+ng generate component components/task-list
+ng generate component components/task-form
+ng generate component components/task-item
+ng generate service services/task
+ng generate interface models/task
+```
+
+### 4. Structure du Projet
+```
+gestionnaire-taches/
+├── src/
+│   ├── app/
+│   │   ├── components/
+│   │   │   ├── dashboard/
+│   │   │   ├── task-list/
+│   │   │   ├── task-form/
+│   │   │   └── task-item/
+│   │   ├── models/
+│   │   │   └── task.ts
+│   │   ├── services/
+│   │   │   └── task.service.ts
+│   │   ├── app.component.*
+│   │   └── app.module.ts
+│   └── styles.css
+└── package.json
+```
+
+### 5. Lancer le Serveur de Développement
+```bash
+ng serve
+# Ou pour ouvrir automatiquement le navigateur:
+ng serve --open
+```
+
+### 6. Accéder à l'Application
+Ouvrir le navigateur: `http://localhost:4200`
+
+## 🎨 Fonctionnalités Implémentées
+
+### ✅ Tableau de Bord
+- Statistiques en temps réel
+- Cartes colorées pour chaque statut
+- Barre de progression globale
+- Calcul automatique des pourcentages
+
+### ✅ Gestion des Tâches
+- Ajout de nouvelles tâches
+- Modification du statut
+- Suppression avec confirmation
+- Validation de formulaire
+
+### ✅ Filtrage
+- Afficher toutes les tâches
+- Filtrer par statut (À faire, En cours, Terminées)
+- Mise à jour dynamique
+
+### ✅ Système de Priorités
+- Basse (vert)
+- Moyenne (orange)
+- Haute (rouge)
+
+## 🔍 Concepts Angular Utilisés
+
+### 1. Services et Injection de Dépendances
+```typescript
+@Injectable({ providedIn: 'root' })
+export class TaskService { }
+```
+
+### 2. Observables (RxJS)
+```typescript
+private tasksSubject = new BehaviorSubject<Task[]>(this.tasks);
+public tasks$ = this.tasksSubject.asObservable();
+```
+
+### 3. Communication entre Composants
+```typescript
+@Input() task!: Task;
+@Output() delete = new EventEmitter<number>();
+```
+
+### 4. Liaison de Données
+- One-way binding: `[property]="value"`
+- Two-way binding: `[(ngModel)]="property"`
+- Event binding: `(event)="handler()"`
+
+### 5. Directives Structurelles
+- `*ngFor`: Boucles
+- `*ngIf`: Conditions
+- `*ngTemplate`: Templates
+
+## 🚀 Commandes Utiles
+
+```bash
+# Lancer en mode développement
+ng serve
+
+# Compiler pour la production
+ng build --configuration production
+
+# Exécuter les tests
+ng test
+
+# Générer un nouveau composant
+ng generate component nom-composant
+
+# Générer un nouveau service
+ng generate service services/nom-service
+
+# Voir l'aide
+ng help
+```
+
+## 📊 Tests de l'Application
+
+### Test 1: Ajouter une Tâche
+1. Remplir le formulaire
+2. Cliquer sur "Ajouter"
+3. Vérifier que la tâche apparaît dans la liste
+4. Vérifier que les statistiques sont mises à jour
+
+### Test 2: Modifier le Statut
+1. Sélectionner un nouveau statut dans le menu déroulant
+2. Vérifier que le style change
+3. Vérifier que les statistiques sont actualisées
+
+### Test 3: Filtrer les Tâches
+1. Cliquer sur "En cours"
+2. Vérifier que seules les tâches en cours s'affichent
+3. Tester les autres filtres
+
+### Test 4: Supprimer une Tâche
+1. Cliquer sur "Supprimer"
+2. Confirmer la suppression
+3. Vérifier que la tâche disparaît
+4. Vérifier que les statistiques sont actualisées
+
+## 🎓 Points d'Apprentissage
+
+### TypeScript
+- Interfaces et types
+- Génériques
+- Modificateurs d'accès (private, public)
+- Arrow functions
+- Optional chaining
+
+### Angular
+- Architecture en composants
+- Services et injection de dépendances
+- Cycle de vie des composants (ngOnInit)
+- RxJS et programmation réactive
+- Forms (Template-driven)
+
+### Bonnes Pratiques
+- Séparation des responsabilités
+- Composants réutilisables
+- Service unique pour la logique métier
+- Style modulaire et maintenable
+
+## 🐛 Résolution de Problèmes
+
+### Erreur: "ng: command not found"
+```bash
+npm install -g @angular/cli
+```
+
+### Erreur de port 4200 déjà utilisé
+```bash
+ng serve --port 4300
+```
+
+### Erreur FormsModule
+Vérifier que FormsModule est importé dans app.module.ts
+
+### Les styles ne s'appliquent pas
+Vérifier que les chemins CSS sont corrects dans les composants
+
+## 📚 Ressources
+
+- Documentation Angular: https://angular.io/docs
+- TypeScript: https://www.typescriptlang.org/docs/
+- RxJS: https://rxjs.dev/guide/overview
+- Angular CLI: https://angular.io/cli
+
+## 🎯 Exercices Supplémentaires
+
+### Exercice 1: Tri des Tâches
+Ajouter un bouton pour trier par:
+- Date de création
+- Priorité
+- Titre alphabétique
+
+### Exercice 2: Recherche
+Ajouter une barre de recherche pour filtrer par titre
+
+### Exercice 3: Édition
+Permettre la modification d'une tâche existante
+
+### Exercice 4: LocalStorage
+Sauvegarder les tâches dans le navigateur
+
+### Exercice 5: Animations
+Ajouter des animations lors de l'ajout/suppression
+
+## ✅ Critères d'Évaluation
+
+- [ ] L'application démarre sans erreur
+- [ ] Le tableau de bord affiche les statistiques
+- [ ] On peut ajouter une tâche
+- [ ] On peut modifier le statut
+- [ ] On peut supprimer une tâche
+- [ ] Les filtres fonctionnent
+- [ ] L'interface est responsive
+- [ ] Le code est propre et commenté
+- [ ] Les bonnes pratiques Angular sont respectées
+
+## 🎉 Félicitations !
+
+Vous avez créé une application Angular complète avec:
+- 4 composants
+- 1 service
+- 1 interface TypeScript
+- Gestion d'état avec RxJS
+- Interface utilisateur moderne
+
+---
+
+**Auteur:** TD Angular & TypeScript  
+**Date:** Novembre 2024  
+**Version:** 1.0
